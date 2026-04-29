@@ -379,26 +379,7 @@
       pointer-events: none;     /* desktop: let iframe take touch/scroll */
     }
 
-    /* tap-to-load play overlay (mobile only) */
-    .preview__play {
-      position: absolute;
-      bottom: 14px; left: 50%;
-      transform: translateX(-50%);
-      z-index: 6;
-      background: var(--ink);
-      color: var(--bg);
-      font-family: var(--display);
-      font-weight: 800;
-      font-size: 11px;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      padding: 9px 16px;
-      border: 2px solid var(--ink);
-      cursor: pointer;
-      display: none;
-      pointer-events: auto;
-    }
-    .preview.is-active .preview__play { display: none; }
+    /* (old tap-to-load button removed — spotlight mode replaces it) */
 
     /* responsive scale */
     @media (max-width: 480px)  { .preview { --scale: 0.24; } }
@@ -407,10 +388,28 @@
     @media (min-width: 1100px) { .preview { --scale: 0.36; } }
     @media (min-width: 1300px) { .preview { --scale: 0.40; } }
 
-    /* MOBILE: show "tap to load" overlay; iframe never auto-mounts */
+    /* MOBILE: spotlight mode — ONE iframe at a time, follows your scroll.
+       The card closest to viewport center auto-mounts; others stay thumb-only.
+       Memory stays flat → iOS Safari doesn't crash, scroll feature preserved. */
     @media (max-width: 719.98px) {
-      .preview__play { display: inline-block; }
-      .preview .preview__cover { pointer-events: auto; }   /* tap → triggers play */
+      .preview .preview__cover { pointer-events: auto; }
+      .preview.is-active .preview__cover { pointer-events: none; } /* let iframe take touch */
+      /* small "EN VIVO" pill on the active card so the user knows which is live */
+      .preview.is-active::after {
+        content: "● EN VIVO";
+        position: absolute;
+        top: 10px; left: 10px;
+        z-index: 7;
+        background: var(--lime);
+        color: var(--ink);
+        font-family: var(--display);
+        font-weight: 800;
+        font-size: 10px;
+        letter-spacing: 0.14em;
+        padding: 5px 9px;
+        border: 2px solid var(--ink);
+        pointer-events: none;
+      }
     }
 
     /* card actions */
@@ -718,52 +717,72 @@ Si tienes treinta minutos, te lo demuestro.
         p.classList.remove('is-active');
       }
 
-      // Add a "Tocar para activar" button to each preview (mobile-only, shown via CSS)
-      previews.forEach(function (p) {
-        if (p.classList.contains('preview--static')) return;     // tool cards: no iframe
-        var btn = document.createElement('button');
-        btn.className = 'preview__play';
-        btn.type = 'button';
-        btn.textContent = '▶ Tocar para activar';
-        btn.addEventListener('click', function (ev) {
-          ev.preventDefault();
-          ev.stopPropagation();
-          mount(p);
-        });
-        // also mount on tapping the thumb itself (mobile)
-        var cover = p.querySelector('.preview__cover');
-        if (cover) {
-          cover.addEventListener('click', function (ev) {
-            if (!IS_DESKTOP) {
-              ev.preventDefault();
-              mount(p);
-            }
-          });
-        }
-        p.appendChild(btn);
-      });
+      var iframeable = previews.filter(function (p) { return !p.classList.contains('preview--static'); });
 
       if (IS_DESKTOP && supportsIO) {
-        // Desktop: auto-mount on entry, unmount when far. Smooth m3ent feel.
+        // Desktop: auto-mount on entry, unmount when far. Multiple iframes OK.
         var inView = new IntersectionObserver(function (entries) {
           entries.forEach(function (e) { if (e.isIntersecting) mount(e.target); });
         }, { rootMargin: '600px 0px 600px 0px', threshold: 0 });
         var farAway = new IntersectionObserver(function (entries) {
           entries.forEach(function (e) { if (!e.isIntersecting) unmount(e.target); });
         }, { rootMargin: '1500px 0px 1500px 0px', threshold: 0 });
-        previews.forEach(function (p) {
-          if (p.classList.contains('preview--static')) return;
-          inView.observe(p); farAway.observe(p);
-        });
-      } else if (supportsIO) {
-        // Mobile: just unmount when scrolled far away (memory hygiene)
-        var farMobile = new IntersectionObserver(function (entries) {
-          entries.forEach(function (e) { if (!e.isIntersecting) unmount(e.target); });
-        }, { rootMargin: '800px 0px 800px 0px', threshold: 0 });
-        previews.forEach(function (p) {
-          if (p.classList.contains('preview--static')) return;
-          farMobile.observe(p);
-        });
+        iframeable.forEach(function (p) { inView.observe(p); farAway.observe(p); });
+      } else {
+        // ── MOBILE SPOTLIGHT ──────────────────────────────────────
+        // Only ONE iframe alive at a time. The card whose center is
+        // closest to the viewport center gets mounted; others stay
+        // as thumbs. As you scroll, the spotlight follows.
+        var current = null;
+        var ticking = false;
+        var ENTER_DIST = function () { return window.innerHeight * 0.65; };  // mount within ~65% vh of center
+        var EXIT_DIST  = function () { return window.innerHeight * 1.10; };  // unmount past ~110% vh
+
+        function distFromCenter (el) {
+          var r = el.getBoundingClientRect();
+          var cardCenter = r.top + r.height / 2;
+          var vpCenter   = window.innerHeight / 2;
+          return Math.abs(cardCenter - vpCenter);
+        }
+
+        function pickWinner () {
+          var best = null, bestD = Infinity;
+          for (var i = 0; i < iframeable.length; i++) {
+            var d = distFromCenter(iframeable[i]);
+            if (d < bestD) { bestD = d; best = iframeable[i]; }
+          }
+          return { card: best, dist: bestD };
+        }
+
+        function update () {
+          ticking = false;
+          var w = pickWinner();
+          if (!w.card) return;
+          if (w.dist > EXIT_DIST() || w.dist > ENTER_DIST() && current !== w.card) {
+            // far from center — unmount current if any
+            if (current && w.dist > EXIT_DIST()) {
+              unmount(current);
+              current = null;
+              return;
+            }
+          }
+          if (w.dist <= ENTER_DIST() && current !== w.card) {
+            if (current) unmount(current);
+            mount(w.card);
+            current = w.card;
+          }
+        }
+
+        function onScroll () {
+          if (ticking) return;
+          ticking = true;
+          requestAnimationFrame(update);
+        }
+
+        window.addEventListener('scroll', onScroll, { passive: true });
+        window.addEventListener('resize', onScroll);
+        // first run after layout
+        setTimeout(update, 200);
       }
 
       // ── typewriter "Qué hago" ────────────────────────────────────
