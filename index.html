@@ -137,9 +137,34 @@
 
     /* ── typewriter "Qué hago" letter card (king-kong dear-business-builder) */
     .typewriter {
-      max-width: 720px;
+      max-width: 1040px;
       margin: clamp(40px, 6vw, 80px) auto;
       padding: 0 var(--pad);
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: clamp(28px, 4vw, 56px);
+      align-items: start;
+    }
+    @media (min-width: 880px) {
+      .typewriter { grid-template-columns: 230px 1fr; }
+    }
+    .typewriter__photo {
+      margin: 0;
+      border: 2px solid var(--ink);
+      box-shadow: 6px 6px 0 0 var(--ink);
+      background: var(--bg-soft);
+      aspect-ratio: 4 / 5;
+      overflow: hidden;
+      transform: rotate(-1deg);
+    }
+    .typewriter__photo img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: center 30%;
+      display: block;
+    }
+    .typewriter__photo figcaption {
+      display: none;
     }
     .typewriter__paper {
       background: var(--bg-paper);
@@ -404,6 +429,10 @@
 
   <!-- ── typewriter "Qué hago" letter ───────────────────────────── -->
   <section class="typewriter">
+    <figure class="typewriter__photo">
+      <img src="assets/tino.jpg" alt="Tino Machristi" loading="lazy" width="460" height="575" />
+      <figcaption>Tino — Tenerife</figcaption>
+    </figure>
     <div class="typewriter__paper">
       <span class="typewriter__label">¿Qué hago?</span>
       <p class="typewriter__text"
@@ -415,7 +444,9 @@ Solo tengo buenas ideas, tiempo, y muchas ganas de ayudarte.
 Puedo optimizar tu negocio de forma drástica, montarte una landing page, e implementar inteligencia artificial de la manera más cercana que vas a encontrar.
 
 Sin agencia. Sin paripés. Sin discurso de LinkedIn.
-Si tienes treinta minutos, te lo demuestro."><span class="typewriter__caret"></span></p>
+Si tienes treinta minutos, te lo demuestro.
+
+→ +34 689 525 199"><span class="typewriter__caret"></span></p>
     </div>
   </section>
 
