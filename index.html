@@ -176,13 +176,15 @@
       position: absolute;
       top: 0; left: 0;
       width: 1400px;
-      height: 1750px;            /* tall canvas — user can scroll inside */
+      height: 1750px;
       border: 0;
       transform: scale(var(--scale, 0.34));
       transform-origin: top left;
-      pointer-events: auto;
-      -webkit-overflow-scrolling: touch;
+      z-index: 1;
+      background: var(--bg-paper);
+      display: none;             /* hidden by default — JS mounts when in view on desktop */
     }
+    .preview.is-active .preview__frame { display: block; }
     .preview__thumb {
       position: absolute;
       inset: 0;
@@ -192,15 +194,30 @@
       z-index: 0;
       transition: opacity 0.4s ease;
     }
-    .preview__frame { z-index: 1; background: var(--bg-paper); }
+    .preview.is-active .preview__thumb { opacity: 0; }
+    .preview__cover {
+      position: absolute; inset: 0;
+      z-index: 4;
+      display: block;
+      pointer-events: none;     /* desktop: let iframe take touch/scroll */
+    }
 
-    /* responsive scale: card display width / 1400 */
-    @media (max-width: 480px)  { .preview { --scale: 0.21; } }
-    @media (min-width: 481px)  { .preview { --scale: 0.27; } }
-    @media (min-width: 720px)  { .preview { --scale: 0.34; } }
-    @media (min-width: 880px)  { .preview { --scale: 0.30; } }
-    @media (min-width: 1100px) { .preview { --scale: 0.37; } }
+    /* responsive scale */
+    @media (min-width: 720px)  { .preview { --scale: 0.32; } }
+    @media (min-width: 1100px) { .preview { --scale: 0.36; } }
     @media (min-width: 1300px) { .preview { --scale: 0.40; } }
+
+    /* MOBILE (< 720px): no iframes at all — pure static thumb + link.
+       Stops iOS Safari memory thrash from 7 cross-origin frames. */
+    @media (max-width: 719.98px) {
+      .preview__frame { display: none !important; }
+      .preview { aspect-ratio: 4 / 5; }
+      .preview .preview__thumb { opacity: 1 !important; }
+      .preview .preview__cover {
+        z-index: 6;
+        pointer-events: auto;   /* mobile: thumb is the tap target */
+      }
+    }
 
     /* card actions */
     .card__actions {
@@ -277,8 +294,9 @@
       <h2 class="card__title">Valor Oculto — v3</h2>
       <p class="card__sub"><span class="star">★</span>King Kong · Conversión</p>
       <div class="preview">
-        <img class="preview__thumb" src="assets/thumbs/vito-v3.jpg" alt="Valor Oculto v3 preview" />
-        <iframe class="preview__frame" src="https://teneriferesortinvest.github.io/valor-oculto-demos/v3/" loading="lazy" title="Valor Oculto v3" sandbox="allow-scripts allow-same-origin allow-popups"></iframe>
+        <img class="preview__thumb" src="assets/thumbs/vito-v3.jpg" alt="Valor Oculto v3 preview" loading="lazy" width="800" height="1000" />
+        <a class="preview__cover" href="https://teneriferesortinvest.github.io/valor-oculto-demos/v3/" target="_blank" rel="noopener" aria-label="Open live"></a>
+        <iframe class="preview__frame" data-src="https://teneriferesortinvest.github.io/valor-oculto-demos/v3/" title="Valor Oculto v3" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
       </div>
       <div class="card__actions">
         <a class="btn btn--lime" href="https://teneriferesortinvest.github.io/valor-oculto-demos/v3/" target="_blank" rel="noopener">Open live →</a>
@@ -290,8 +308,9 @@
       <h2 class="card__title">Valor Oculto — v2</h2>
       <p class="card__sub">Editorial cálido · Crema + brick</p>
       <div class="preview">
-        <img class="preview__thumb" src="assets/thumbs/vito-v2.jpg" alt="Valor Oculto v2 preview" />
-        <iframe class="preview__frame" src="https://teneriferesortinvest.github.io/valor-oculto-demos/v2/" loading="lazy" title="Valor Oculto v2" sandbox="allow-scripts allow-same-origin allow-popups"></iframe>
+        <img class="preview__thumb" src="assets/thumbs/vito-v2.jpg" alt="Valor Oculto v2 preview" loading="lazy" width="800" height="1000" />
+        <a class="preview__cover" href="https://teneriferesortinvest.github.io/valor-oculto-demos/v2/" target="_blank" rel="noopener" aria-label="Open live"></a>
+        <iframe class="preview__frame" data-src="https://teneriferesortinvest.github.io/valor-oculto-demos/v2/" title="Valor Oculto v2" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
       </div>
       <div class="card__actions">
         <a class="btn" href="https://teneriferesortinvest.github.io/valor-oculto-demos/v2/" target="_blank" rel="noopener">Open live →</a>
@@ -303,8 +322,9 @@
       <h2 class="card__title">Valor Oculto — v1</h2>
       <p class="card__sub">Manifesto · Negro + rojo</p>
       <div class="preview">
-        <img class="preview__thumb" src="assets/thumbs/vito-v1.jpg" alt="Valor Oculto v1 preview" />
-        <iframe class="preview__frame" src="https://teneriferesortinvest.github.io/valor-oculto-demos/v1/" loading="lazy" title="Valor Oculto v1" sandbox="allow-scripts allow-same-origin allow-popups"></iframe>
+        <img class="preview__thumb" src="assets/thumbs/vito-v1.jpg" alt="Valor Oculto v1 preview" loading="lazy" width="800" height="1000" />
+        <a class="preview__cover" href="https://teneriferesortinvest.github.io/valor-oculto-demos/v1/" target="_blank" rel="noopener" aria-label="Open live"></a>
+        <iframe class="preview__frame" data-src="https://teneriferesortinvest.github.io/valor-oculto-demos/v1/" title="Valor Oculto v1" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
       </div>
       <div class="card__actions">
         <a class="btn" href="https://teneriferesortinvest.github.io/valor-oculto-demos/v1/" target="_blank" rel="noopener">Open live →</a>
@@ -316,8 +336,9 @@
       <h2 class="card__title">Villa Bali</h2>
       <p class="card__sub">Flagship · Single-property landing</p>
       <div class="preview">
-        <img class="preview__thumb" src="assets/thumbs/villa-bali.jpg" alt="Villa Bali preview" />
-        <iframe class="preview__frame" src="https://teneriferesortinvest.github.io/tri-dashboard/villa-bali/" loading="lazy" title="Villa Bali" sandbox="allow-scripts allow-same-origin allow-popups"></iframe>
+        <img class="preview__thumb" src="assets/thumbs/villa-bali.jpg" alt="Villa Bali preview" loading="lazy" width="800" height="1000" />
+        <a class="preview__cover" href="https://teneriferesortinvest.github.io/tri-dashboard/villa-bali/" target="_blank" rel="noopener" aria-label="Open live"></a>
+        <iframe class="preview__frame" data-src="https://teneriferesortinvest.github.io/tri-dashboard/villa-bali/" title="Villa Bali" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
       </div>
       <div class="card__actions">
         <a class="btn" href="https://teneriferesortinvest.github.io/tri-dashboard/villa-bali/" target="_blank" rel="noopener">Open live →</a>
@@ -329,8 +350,9 @@
       <h2 class="card__title">Villa Arizona</h2>
       <p class="card__sub">First flagship · Brand v2 prototype</p>
       <div class="preview">
-        <img class="preview__thumb" src="assets/thumbs/villa-arizona.jpg" alt="Villa Arizona preview" />
-        <iframe class="preview__frame" src="https://teneriferesortinvest.github.io/villa-arizona/" loading="lazy" title="Villa Arizona" sandbox="allow-scripts allow-same-origin allow-popups"></iframe>
+        <img class="preview__thumb" src="assets/thumbs/villa-arizona.jpg" alt="Villa Arizona preview" loading="lazy" width="800" height="1000" />
+        <a class="preview__cover" href="https://teneriferesortinvest.github.io/villa-arizona/" target="_blank" rel="noopener" aria-label="Open live"></a>
+        <iframe class="preview__frame" data-src="https://teneriferesortinvest.github.io/villa-arizona/" title="Villa Arizona" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
       </div>
       <div class="card__actions">
         <a class="btn" href="https://teneriferesortinvest.github.io/villa-arizona/" target="_blank" rel="noopener">Open live →</a>
@@ -342,8 +364,9 @@
       <h2 class="card__title">Tenerife Resort Invest — rebuild</h2>
       <p class="card__sub"><span class="star">★</span>Black Mass intro · feat/black-mass-hero</p>
       <div class="preview">
-        <img class="preview__thumb" src="assets/thumbs/tri-rebuild.jpg" alt="TRI rebuild preview" />
-        <iframe class="preview__frame" src="https://teneriferesortinvest.github.io/tri-website-preview/" loading="lazy" title="TRI rebuild" sandbox="allow-scripts allow-same-origin allow-popups"></iframe>
+        <img class="preview__thumb" src="assets/thumbs/tri-rebuild.jpg" alt="TRI rebuild preview" loading="lazy" width="800" height="1000" />
+        <a class="preview__cover" href="https://teneriferesortinvest.github.io/tri-website-preview/" target="_blank" rel="noopener" aria-label="Open live"></a>
+        <iframe class="preview__frame" data-src="https://teneriferesortinvest.github.io/tri-website-preview/" title="TRI rebuild" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
       </div>
       <div class="card__actions">
         <a class="btn btn--lime" href="https://teneriferesortinvest.github.io/tri-website-preview/" target="_blank" rel="noopener">Open live →</a>
@@ -355,8 +378,9 @@
       <h2 class="card__title">Tenerife Resort Invest</h2>
       <p class="card__sub">Main site · 8 years live</p>
       <div class="preview">
-        <img class="preview__thumb" src="assets/thumbs/tri-main.jpg" alt="Tenerife Resort Invest preview" />
-        <iframe class="preview__frame" src="https://teneriferesortinvest.es/" loading="lazy" title="Tenerife Resort Invest" sandbox="allow-scripts allow-same-origin allow-popups"></iframe>
+        <img class="preview__thumb" src="assets/thumbs/tri-main.jpg" alt="Tenerife Resort Invest preview" loading="lazy" width="800" height="1000" />
+        <a class="preview__cover" href="https://teneriferesortinvest.es/" target="_blank" rel="noopener" aria-label="Open live"></a>
+        <iframe class="preview__frame" data-src="https://teneriferesortinvest.es/" title="Tenerife Resort Invest" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
       </div>
       <div class="card__actions">
         <a class="btn" href="https://teneriferesortinvest.es/" target="_blank" rel="noopener">Open live →</a>
@@ -370,15 +394,32 @@
   </footer>
 
   <script>
-    // hide thumb fallback once iframe content loads
-    document.querySelectorAll('.preview').forEach(p => {
-      const f = p.querySelector('iframe');
-      const t = p.querySelector('.preview__thumb');
-      if (!f || !t) return;
-      f.addEventListener('load', () => { t.style.opacity = 0; });
-      // safety: hide thumb after 6s regardless
-      setTimeout(() => { t.style.opacity = 0; }, 6000);
-    });
-  </script>
+    (function () {
+      'use strict';
+      var DESKTOP = window.matchMedia('(min-width: 720px)').matches;
+      var supportsIO = 'IntersectionObserver' in window;
+
+      function mount(p) {
+        if (p.classList.contains('is-active')) return;
+        var f = p.querySelector('.preview__frame');
+        if (!f) return;
+        var s = f.getAttribute('data-src');
+        if (!s) return;
+        f.setAttribute('src', s);
+        f.removeAttribute('data-src');
+        p.classList.add('is-active');
+      }
+
+      if (!DESKTOP) return;            // mobile: never mount iframes — thumb-only
+      var previews = document.querySelectorAll('.preview');
+      if (!supportsIO) { previews.forEach(mount); return; }
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) { mount(e.target); io.unobserve(e.target); }
+        });
+      }, { rootMargin: '200px 0px', threshold: 0.05 });
+      previews.forEach(function (p) { io.observe(p); });
+    })();
+    </script>
 </body>
 </html>
