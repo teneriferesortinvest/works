@@ -512,7 +512,7 @@ Si tienes treinta minutos, te lo demuestro.
 
   <header class="section-head">
     <h2>Landing pages</h2>
-    <span class="section-head__count">07 piezas</span>
+    <span class="section-head__count">06 piezas</span>
   </header>
   <main class="grid">
 
@@ -603,21 +603,6 @@ Si tienes treinta minutos, te lo demuestro.
       </div>
       <div class="card__actions">
         <a class="btn btn--lime" href="https://teneriferesortinvest.github.io/tri-website-preview/" target="_blank" rel="noopener">Verla en vivo →</a>
-      </div>
-    </article>
-
-    <article class="card">
-      <p class="card__date">En vivo · 2018 → 2026</p>
-      <h2 class="card__title">Tenerife Resort Invest</h2>
-      <p class="card__sub">Web principal · 8 años en vivo</p>
-      <div class="preview">
-        <img class="preview__thumb" src="assets/thumbs/tri-main.jpg" alt="Tenerife Resort Invest" loading="lazy" width="800" height="1000" />
-        <a class="preview__cover" href="https://teneriferesortinvest.es/" target="_blank" rel="noopener" aria-label="Verla en vivo"></a>
-        <img class="preview__longshot" src="assets/scrolls/tri-main.jpg" alt="" loading="lazy" decoding="async" />
-        <iframe class="preview__frame" data-src="https://teneriferesortinvest.es/" title="Tenerife Resort Invest" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-      </div>
-      <div class="card__actions">
-        <a class="btn" href="https://teneriferesortinvest.es/" target="_blank" rel="noopener">Verla en vivo →</a>
       </div>
     </article>
 
@@ -741,17 +726,16 @@ Si tienes treinta minutos, te lo demuestro.
       }
 
       // ── typewriter "Qué hago" ────────────────────────────────────
-      // Mobile + reduced-motion: render full text immediately (no setTimeout
-      // chain — keeps iOS Safari main thread quiet)
+      // Runs on both mobile + desktop. Mobile cards no longer host iframes,
+      // so the main thread is free for this animation.
       var twEl = document.querySelector('.typewriter__text');
       if (twEl) {
         var fullText = twEl.getAttribute('data-text') || '';
         var caret = twEl.querySelector('.typewriter__caret');
         twEl.firstChild && twEl.firstChild.nodeType === 3 && twEl.removeChild(twEl.firstChild);
         var prefersReduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        var staticOnly = !IS_DESKTOP || prefersReduce;
 
-        if (staticOnly) {
+        if (prefersReduce) {
           twEl.insertBefore(document.createTextNode(fullText), caret);
           if (caret) caret.style.display = 'none';
         } else {
