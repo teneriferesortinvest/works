@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Agent Smith — Estudio · Tenerife</title>
-  <meta name="description" content="Páginas web y landing pages de Agent Smith. Tenerife, sin paripés." />
+  <title>Agente Smith — Estudio · Tenerife</title>
+  <meta name="description" content="Páginas web y landing pages de Agente Smith. Tenerife, sin paripés." />
   <meta name="theme-color" content="#f4ede0" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -135,6 +135,87 @@
     .repr__roster span { white-space: nowrap; }
     .repr__roster .dot { color: var(--lime); margin: 0 6px; font-weight: 900; }
 
+    /* ── typewriter "Qué hago" letter card (king-kong dear-business-builder) */
+    .typewriter {
+      max-width: 720px;
+      margin: clamp(40px, 6vw, 80px) auto;
+      padding: 0 var(--pad);
+    }
+    .typewriter__paper {
+      background: var(--bg-paper);
+      border: 2px solid var(--ink);
+      box-shadow: 8px 8px 0 0 var(--ink);
+      padding: clamp(28px, 4vw, 56px);
+      position: relative;
+      font-family: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, monospace;
+      font-size: clamp(15px, 1.4vw, 17px);
+      line-height: 1.7;
+      color: var(--ink-soft);
+      min-height: 280px;
+    }
+    .typewriter__label {
+      position: absolute;
+      top: -12px; left: 18px;
+      background: var(--ink);
+      color: var(--bg);
+      padding: 4px 12px;
+      font-family: var(--display);
+      font-weight: 800;
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+    .typewriter__text {
+      white-space: pre-wrap;
+      margin: 0;
+      min-height: 7em;
+    }
+    .typewriter__text strong { color: var(--ink); font-weight: 700; }
+    .typewriter__caret {
+      display: inline-block;
+      width: 0.55em;
+      height: 1.1em;
+      background: var(--ink);
+      vertical-align: -2px;
+      margin-left: 2px;
+      animation: blink 0.95s steps(1) infinite;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    /* ── section heading (between groups of cards) */
+    .section-head {
+      max-width: 1340px;
+      margin: clamp(56px, 8vw, 120px) auto 0;
+      padding: 0 var(--pad) clamp(20px, 3vw, 32px);
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      border-bottom: 2px solid var(--ink);
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .section-head h2 {
+      font-family: "Archivo Black", sans-serif;
+      font-size: clamp(28px, 4.8vw, 56px);
+      letter-spacing: -0.02em;
+      text-transform: uppercase;
+      margin: 0;
+      color: var(--ink);
+    }
+    .section-head__count {
+      font-family: var(--display);
+      font-weight: 700;
+      font-size: 12px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink-dim);
+    }
+
+    /* ── tool card variant (no iframe — static thumb + meta) */
+    .preview--static .preview__cover { pointer-events: auto; }
+    .preview--static .preview__thumb { object-fit: contain; background: var(--bg-soft); }
+    .preview--static iframe { display: none !important; }
+
     /* ── cards grid ─────────────────────────────────────────────── */
     .grid {
       max-width: 1340px;
@@ -226,12 +307,39 @@
       pointer-events: none;     /* desktop: let iframe take touch/scroll */
     }
 
+    /* tap-to-load play overlay (mobile only) */
+    .preview__play {
+      position: absolute;
+      bottom: 14px; left: 50%;
+      transform: translateX(-50%);
+      z-index: 6;
+      background: var(--ink);
+      color: var(--bg);
+      font-family: var(--display);
+      font-weight: 800;
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 9px 16px;
+      border: 2px solid var(--ink);
+      cursor: pointer;
+      display: none;
+      pointer-events: auto;
+    }
+    .preview.is-active .preview__play { display: none; }
+
     /* responsive scale */
     @media (max-width: 480px)  { .preview { --scale: 0.24; } }
     @media (min-width: 481px)  { .preview { --scale: 0.28; } }
     @media (min-width: 720px)  { .preview { --scale: 0.32; } }
     @media (min-width: 1100px) { .preview { --scale: 0.36; } }
     @media (min-width: 1300px) { .preview { --scale: 0.40; } }
+
+    /* MOBILE: show "tap to load" overlay; iframe never auto-mounts */
+    @media (max-width: 719.98px) {
+      .preview__play { display: inline-block; }
+      .preview .preview__cover { pointer-events: auto; }   /* tap → triggers play */
+    }
 
     /* card actions */
     .card__actions {
@@ -288,11 +396,28 @@
 
   <header class="hero">
     <h1 class="hero__mark">
-      Agent Smith
+      Agente Smith
       <img class="hero__sticker" src="assets/agent-smith-sticker.png" alt="" aria-hidden="true" loading="eager" />
     </h1>
     <p class="hero__sub">Estudio · Landing Pages · Tenerife</p>
   </header>
+
+  <!-- ── typewriter "Qué hago" letter ───────────────────────────── -->
+  <section class="typewriter">
+    <div class="typewriter__paper">
+      <span class="typewriter__label">¿Qué hago?</span>
+      <p class="typewriter__text"
+         data-text="Estoy usando IA desde mi casa.
+No soy programador.
+No soy ingeniero.
+Solo tengo buenas ideas, tiempo, y muchas ganas de ayudarte.
+
+Puedo optimizar tu negocio de forma drástica, montarte una landing page, e implementar inteligencia artificial de la manera más cercana que vas a encontrar.
+
+Sin agencia. Sin paripés. Sin discurso de LinkedIn.
+Si tienes treinta minutos, te lo demuestro."><span class="typewriter__caret"></span></p>
+    </div>
+  </section>
 
   <section class="repr">
     <span class="repr__label">Trabajando con</span>
@@ -304,6 +429,10 @@
     </span>
   </section>
 
+  <header class="section-head">
+    <h2>Landing pages</h2>
+    <span class="section-head__count">07 piezas</span>
+  </header>
   <main class="grid">
 
     <article class="card">
@@ -406,19 +535,73 @@
 
   </main>
 
+  <!-- ── Apps internas ──────────────────────────────────────────── -->
+  <header class="section-head">
+    <h2>Apps internas</h2>
+    <span class="section-head__count">01 pieza</span>
+  </header>
+  <main class="grid">
+    <article class="card">
+      <p class="card__date">Diario · 2026</p>
+      <h2 class="card__title">TRI Morning Dashboard</h2>
+      <p class="card__sub"><span class="star">★</span>Operativa diaria · leads · tareas</p>
+      <div class="preview">
+        <img class="preview__thumb" src="assets/tools/tri-dashboard.jpg" alt="TRI Morning Dashboard" loading="lazy" width="800" height="1000" />
+        <a class="preview__cover" href="https://teneriferesortinvest.github.io/tri-dashboard/" target="_blank" rel="noopener" aria-label="Abrir dashboard"></a>
+        <iframe class="preview__frame" data-src="https://teneriferesortinvest.github.io/tri-dashboard/" title="TRI Dashboard" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
+      <div class="card__actions">
+        <a class="btn btn--lime" href="https://teneriferesortinvest.github.io/tri-dashboard/" target="_blank" rel="noopener">Abrir dashboard →</a>
+      </div>
+    </article>
+  </main>
+
+  <!-- ── Hojas de cálculo y herramientas ────────────────────────── -->
+  <header class="section-head">
+    <h2>Hojas de cálculo y herramientas</h2>
+    <span class="section-head__count">02 piezas</span>
+  </header>
+  <main class="grid">
+    <article class="card">
+      <p class="card__date">PMS · v3</p>
+      <h2 class="card__title">TRI — PMS</h2>
+      <p class="card__sub">Property management sheet · 100+ propiedades</p>
+      <div class="preview preview--static">
+        <img class="preview__thumb" src="assets/tools/pms.png" alt="TRI PMS" loading="lazy" width="800" height="1000" />
+        <span class="preview__cover" aria-hidden="true"></span>
+      </div>
+      <div class="card__actions">
+        <a class="btn" href="mailto:teneriferesortinvest@gmail.com?subject=Quiero%20ver%20la%20PMS" rel="noopener">Solicitar acceso →</a>
+      </div>
+    </article>
+
+    <article class="card">
+      <p class="card__date">Plantilla · v4</p>
+      <h2 class="card__title">TRI Ficha v4 — SEO content</h2>
+      <p class="card__sub">Generador de contenido SEO por propiedad</p>
+      <div class="preview preview--static">
+        <img class="preview__thumb" src="assets/tools/ficha-v4.png" alt="TRI Ficha v4" loading="lazy" width="800" height="1000" />
+        <span class="preview__cover" aria-hidden="true"></span>
+      </div>
+      <div class="card__actions">
+        <a class="btn" href="mailto:teneriferesortinvest@gmail.com?subject=Quiero%20la%20Ficha%20v4" rel="noopener">Pídeme la plantilla →</a>
+      </div>
+    </article>
+  </main>
+
   <footer class="foot">
-    © 2026 — Agent Smith · Tenerife · escríbeme: <a href="mailto:teneriferesortinvest@gmail.com">teneriferesortinvest@gmail.com</a>
+    © 2026 — Agente Smith · Tenerife · escríbeme: <a href="mailto:teneriferesortinvest@gmail.com">teneriferesortinvest@gmail.com</a>
   </footer>
 
   <script>
     (function () {
       'use strict';
 
-      // Mobile-safe: mount iframe when card enters viewport, UNMOUNT when it leaves.
-      // Keeps DOM iframe count low (~1-2 alive at a time) so iOS Safari doesn't OOM.
+      var IS_DESKTOP = window.matchMedia('(min-width: 720px)').matches;
       var supportsIO = 'IntersectionObserver' in window;
       var previews = Array.prototype.slice.call(document.querySelectorAll('.preview'));
 
+      // ── iframe mount/unmount ──────────────────────────────────────
       function mount (p) {
         if (p.classList.contains('is-active')) return;
         var f = p.querySelector('.preview__frame');
@@ -434,7 +617,6 @@
         if (!p.classList.contains('is-active')) return;
         var f = p.querySelector('.preview__frame');
         if (!f) return;
-        // free up memory: remove src AND swap iframe element so renderer drops it
         f.removeAttribute('src');
         var clone = f.cloneNode(false);
         clone.removeAttribute('src');
@@ -442,30 +624,82 @@
         p.classList.remove('is-active');
       }
 
-      if (!supportsIO) {
-        // Old browser: just mount the first one and let the rest be thumbs.
-        if (previews[0]) mount(previews[0]);
-        return;
+      // Add a "Tocar para activar" button to each preview (mobile-only, shown via CSS)
+      previews.forEach(function (p) {
+        if (p.classList.contains('preview--static')) return;     // tool cards: no iframe
+        var btn = document.createElement('button');
+        btn.className = 'preview__play';
+        btn.type = 'button';
+        btn.textContent = '▶ Tocar para activar';
+        btn.addEventListener('click', function (ev) {
+          ev.preventDefault();
+          ev.stopPropagation();
+          mount(p);
+        });
+        // also mount on tapping the thumb itself (mobile)
+        var cover = p.querySelector('.preview__cover');
+        if (cover) {
+          cover.addEventListener('click', function (ev) {
+            if (!IS_DESKTOP) {
+              ev.preventDefault();
+              mount(p);
+            }
+          });
+        }
+        p.appendChild(btn);
+      });
+
+      if (IS_DESKTOP && supportsIO) {
+        // Desktop: auto-mount on entry, unmount when far. Smooth m3ent feel.
+        var inView = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) { if (e.isIntersecting) mount(e.target); });
+        }, { rootMargin: '600px 0px 600px 0px', threshold: 0 });
+        var farAway = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) { if (!e.isIntersecting) unmount(e.target); });
+        }, { rootMargin: '1500px 0px 1500px 0px', threshold: 0 });
+        previews.forEach(function (p) {
+          if (p.classList.contains('preview--static')) return;
+          inView.observe(p); farAway.observe(p);
+        });
+      } else if (supportsIO) {
+        // Mobile: just unmount when scrolled far away (memory hygiene)
+        var farMobile = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) { if (!e.isIntersecting) unmount(e.target); });
+        }, { rootMargin: '800px 0px 800px 0px', threshold: 0 });
+        previews.forEach(function (p) {
+          if (p.classList.contains('preview--static')) return;
+          farMobile.observe(p);
+        });
       }
 
-      // Pre-warm: mount card when it gets within ~600px of viewport.
-      var inView = new IntersectionObserver(function (entries) {
-        entries.forEach(function (e) {
-          if (e.isIntersecting) mount(e.target);
-        });
-      }, { rootMargin: '600px 0px 600px 0px', threshold: 0 });
-
-      // Cleanup: when card moves more than ~1500px away, unmount.
-      var farAway = new IntersectionObserver(function (entries) {
-        entries.forEach(function (e) {
-          if (!e.isIntersecting) unmount(e.target);
-        });
-      }, { rootMargin: '1500px 0px 1500px 0px', threshold: 0 });
-
-      previews.forEach(function (p) {
-        inView.observe(p);
-        farAway.observe(p);
-      });
+      // ── typewriter "Qué hago" ────────────────────────────────────
+      var twEl = document.querySelector('.typewriter__text');
+      if (twEl) {
+        var fullText = twEl.getAttribute('data-text') || '';
+        var caret = twEl.querySelector('.typewriter__caret');
+        twEl.firstChild && twEl.firstChild.nodeType === 3 && twEl.removeChild(twEl.firstChild);
+        var i = 0;
+        var prefersReduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        function tick () {
+          if (i < fullText.length) {
+            var ch = fullText.charAt(i);
+            twEl.insertBefore(document.createTextNode(ch), caret);
+            i++;
+            // varied delay = natural feel; pause longer on punctuation
+            var d = (ch === '.' || ch === '?' || ch === '!') ? 320
+                  : (ch === ',' ? 180
+                  : (ch === '\n' ? 260
+                  : (18 + Math.random() * 28)));
+            setTimeout(tick, d);
+          }
+        }
+        if (prefersReduce) {
+          twEl.insertBefore(document.createTextNode(fullText), caret);
+        } else {
+          // small delay before starting
+          setTimeout(tick, 600);
+        }
+      }
     })();
     </script>
 </body>
