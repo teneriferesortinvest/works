@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Agent Costantino — Studio · Tenerife</title>
+  <meta name="description" content="Landing pages and web experiences by Agent Costantino. Tenerife, since 2026." />
+  <meta name="theme-color" content="#f4ede0" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Inter:wght@400;500;700&family=Archivo:wght@600;700;800;900&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ── tokens ─────────────────────────────────────────────────── */
+    :root {
+      --bg:        #f4ede0;
+      --bg-soft:   #ebe3d2;
+      --bg-paper:  #ffffff;
+      --ink:       #0a0a0a;
+      --ink-soft:  #1a1a1a;
+      --ink-dim:   #5a5853;
+      --ink-mute:  #a39f93;
+      --rule:      #cdc7b4;
+      --lime:      #c8ff00;
+      --yellow:    #ffe34a;
+
+      --serif:     "Bodoni Moda", "Didot", Georgia, serif;
+      --display:   "Archivo", "Helvetica Neue", system-ui, sans-serif;
+      --body:      "Inter", "Helvetica Neue", system-ui, sans-serif;
+
+      --pad: clamp(20px, 5vw, 64px);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink-soft);
+      font-family: var(--body);
+      font-size: 16px;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+    img { max-width: 100%; display: block; }
+    a { color: inherit; text-decoration: none; }
+
+    /* ── nav (m3ent style: top-right tiny links) ────────────────── */
+    .topnav {
+      display: flex;
+      justify-content: flex-end;
+      gap: 24px;
+      padding: 28px var(--pad);
+      font-family: var(--display);
+      font-weight: 700;
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink-dim);
+    }
+    .topnav a:hover { color: var(--ink); border-bottom: 1px solid var(--lime); }
+
+    /* ── hero / brand mark ──────────────────────────────────────── */
+    .hero {
+      text-align: center;
+      padding: clamp(40px, 7vw, 80px) var(--pad) clamp(40px, 5vw, 64px);
+    }
+    .hero__mark {
+      font-family: var(--serif);
+      font-weight: 400;
+      font-style: italic;
+      font-size: clamp(56px, 14vw, 200px);
+      line-height: 0.9;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      margin: 0 0 14px 0;
+    }
+    .hero__sub {
+      font-family: var(--serif);
+      font-weight: 400;
+      font-size: clamp(13px, 1.3vw, 16px);
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--ink-dim);
+      margin: 0;
+    }
+
+    /* ── representing bar ───────────────────────────────────────── */
+    .repr {
+      border-top: 1px solid var(--rule);
+      border-bottom: 1px solid var(--rule);
+      padding: 28px var(--pad);
+      text-align: center;
+      font-family: var(--display);
+      font-weight: 700;
+      font-size: clamp(13px, 1.4vw, 17px);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--ink);
+    }
+    .repr__label {
+      display: block;
+      font-size: 11px;
+      letter-spacing: 0.24em;
+      color: var(--ink-dim);
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+    .repr__roster span { white-space: nowrap; }
+    .repr__roster .dot { color: var(--lime); margin: 0 6px; font-weight: 900; }
+
+    /* ── cards grid ─────────────────────────────────────────────── */
+    .grid {
+      max-width: 1340px;
+      margin: 0 auto;
+      padding: clamp(40px, 6vw, 80px) var(--pad);
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: clamp(40px, 6vw, 80px) clamp(28px, 3vw, 48px);
+    }
+    @media (min-width: 880px) {
+      .grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    /* ── card ───────────────────────────────────────────────────── */
+    .card { display: block; }
+
+    .card__date {
+      font-family: var(--display);
+      font-weight: 700;
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink-dim);
+      text-align: center;
+      margin: 0 0 14px 0;
+    }
+    .card__title {
+      font-family: var(--serif);
+      font-weight: 700;
+      font-style: italic;
+      font-size: clamp(24px, 2.6vw, 32px);
+      line-height: 1;
+      text-align: center;
+      margin: 0 0 6px 0;
+      color: var(--ink);
+    }
+    .card__sub {
+      font-family: var(--display);
+      font-weight: 600;
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--ink-dim);
+      text-align: center;
+      margin: 0 0 18px 0;
+    }
+    .card__sub .star { color: var(--lime); margin-right: 4px; }
+
+    /* iframe wrap — scrollable preview, m3ent style */
+    .preview {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 4 / 5;
+      border: 2px solid var(--ink);
+      box-shadow: 6px 6px 0 0 var(--ink);
+      background: var(--bg-paper);
+      overflow: hidden;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .preview:hover { transform: translate(-2px, -2px); box-shadow: 10px 10px 0 0 var(--ink); }
+
+    .preview__frame {
+      position: absolute;
+      top: 0; left: 0;
+      width: 1400px;
+      height: 1750px;            /* tall canvas — user can scroll inside */
+      border: 0;
+      transform: scale(var(--scale, 0.34));
+      transform-origin: top left;
+      pointer-events: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .preview__thumb {
+      position: absolute;
+      inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: top center;
+      z-index: 0;
+      transition: opacity 0.4s ease;
+    }
+    .preview__frame { z-index: 1; background: var(--bg-paper); }
+
+    /* responsive scale: card display width / 1400 */
+    @media (max-width: 480px)  { .preview { --scale: 0.21; } }
+    @media (min-width: 481px)  { .preview { --scale: 0.27; } }
+    @media (min-width: 720px)  { .preview { --scale: 0.34; } }
+    @media (min-width: 880px)  { .preview { --scale: 0.30; } }
+    @media (min-width: 1100px) { .preview { --scale: 0.37; } }
+    @media (min-width: 1300px) { .preview { --scale: 0.40; } }
+
+    /* card actions */
+    .card__actions {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 18px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--display);
+      font-weight: 800;
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 11px 18px;
+      border: 2px solid var(--ink);
+      box-shadow: 3px 3px 0 0 var(--ink);
+      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+      cursor: pointer;
+      background: var(--bg-paper);
+      color: var(--ink);
+    }
+    .btn:hover { transform: translate(-2px, -2px); box-shadow: 5px 5px 0 0 var(--ink); }
+    .btn--lime { background: var(--lime); }
+
+    /* ── footer ─────────────────────────────────────────────────── */
+    .foot {
+      border-top: 1px solid var(--rule);
+      padding: 36px var(--pad);
+      text-align: center;
+      font-family: var(--display);
+      font-weight: 600;
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink-dim);
+    }
+    .foot a:hover { color: var(--ink); }
+
+    /* iOS safari touch scroll inside iframe wrap */
+    .preview { -webkit-overflow-scrolling: touch; }
+  </style>
+</head>
+<body>
+
+  <nav class="topnav">
+    <a href="mailto:teneriferesortinvest@gmail.com">Inquire</a>
+    <a href="https://instagram.com/teneriferesortinvest" target="_blank" rel="noopener">Instagram</a>
+  </nav>
+
+  <header class="hero">
+    <h1 class="hero__mark">Agent Costantino</h1>
+    <p class="hero__sub">Studio · Landing Pages · Tenerife</p>
+  </header>
+
+  <section class="repr">
+    <span class="repr__label">Working with</span>
+    <span class="repr__roster">
+      Valor Oculto<span class="dot">•</span>
+      Tenerife Resort Invest<span class="dot">•</span>
+      Villa Bali<span class="dot">•</span>
+      Villa Arizona
+    </span>
+  </section>
+
+  <main class="grid">
+
+    <article class="card">
+      <p class="card__date">29 Apr 2026</p>
+      <h2 class="card__title">Valor Oculto — v3</h2>
+      <p class="card__sub"><span class="star">★</span>King Kong · Conversión</p>
+      <div class="preview">
+        <img class="preview__thumb" src="assets/thumbs/vito-v3.jpg" alt="Valor Oculto v3 preview" />
+        <iframe class="preview__frame" src="https://teneriferesortinvest.github.io/valor-oculto-demos/v3/" loading="lazy" title="Valor Oculto v3" sandbox="allow-scripts allow-same-origin allow-popups"></iframe>
+      </div>
+      <div class="card__actions">
+        <a class="btn btn--lime" href="https://teneriferesortinvest.github.io/valor-oculto-demos/v3/" target="_blank" rel="noopener">Open live →</a>
+      </div>
+    </article>
+
+    <article class="card">
+      <p class="card__date">29 Apr 2026</p>
+      <h2 class="card__title">Valor Oculto — v2</h2>
+      <p class="card__sub">Editorial cálido · Crema + brick</p>
+      <div class="preview">
+        <img class="preview__thumb" src="assets/thumbs/vito-v2.jpg" alt="Valor Oculto v2 preview" />
+        <iframe class="preview__frame" src="https://teneriferesortinvest.github.io/valor-oculto-demos/v2/" loading="lazy" title="Valor Oculto v2" sandbox="allow-scripts allow-same-origin allow-popups"></iframe>
+      </div>
+      <div class="card__actions">
+        <a class="btn" href="https://teneriferesortinvest.github.io/valor-oculto-demos/v2/" target="_blank" rel="noopener">Open live →</a>
+      </div>
+    </article>
+
+    <article class="card">
+      <p class="card__date">29 Apr 2026</p>
+      <h2 class="card__title">Valor Oculto — v1</h2>
+      <p class="card__sub">Manifesto · Negro + rojo</p>
+      <div class="preview">
+        <img class="preview__thumb" src="assets/thumbs/vito-v1.jpg" alt="Valor Oculto v1 preview" />
+        <iframe class="preview__frame" src="https://teneriferesortinvest.github.io/valor-oculto-demos/v1/" loading="lazy" title="Valor Oculto v1" sandbox="allow-scripts allow-same-origin allow-popups"></iframe>
+      </div>
+      <div class="card__actions">
+        <a class="btn" href="https://teneriferesortinvest.github.io/valor-oculto-demos/v1/" target="_blank" rel="noopener">Open live →</a>
+      </div>
+    </article>
+
+    <article class="card">
+      <p class="card__date">15 Apr 2026</p>
+      <h2 class="card__title">Villa Bali</h2>
+      <p class="card__sub">Flagship · Single-property landing</p>
+      <div class="preview">
+        <img class="preview__thumb" src="assets/thumbs/villa-bali.jpg" alt="Villa Bali preview" />
+        <iframe class="preview__frame" src="https://teneriferesortinvest.github.io/tri-dashboard/villa-bali/" loading="lazy" title="Villa Bali" sandbox="allow-scripts allow-same-origin allow-popups"></iframe>
+      </div>
+      <div class="card__actions">
+        <a class="btn" href="https://teneriferesortinvest.github.io/tri-dashboard/villa-bali/" target="_blank" rel="noopener">Open live →</a>
+      </div>
+    </article>
+
+    <article class="card">
+      <p class="card__date">14 Apr 2026</p>
+      <h2 class="card__title">Villa Arizona</h2>
+      <p class="card__sub">First flagship · Brand v2 prototype</p>
+      <div class="preview">
+        <img class="preview__thumb" src="assets/thumbs/villa-arizona.jpg" alt="Villa Arizona preview" />
+        <iframe class="preview__frame" src="https://teneriferesortinvest.github.io/villa-arizona/" loading="lazy" title="Villa Arizona" sandbox="allow-scripts allow-same-origin allow-popups"></iframe>
+      </div>
+      <div class="card__actions">
+        <a class="btn" href="https://teneriferesortinvest.github.io/villa-arizona/" target="_blank" rel="noopener">Open live →</a>
+      </div>
+    </article>
+
+    <article class="card">
+      <p class="card__date">Live · 2018 → 2026</p>
+      <h2 class="card__title">Tenerife Resort Invest</h2>
+      <p class="card__sub">Main site · 8 years live</p>
+      <div class="preview">
+        <img class="preview__thumb" src="assets/thumbs/tri-main.jpg" alt="Tenerife Resort Invest preview" />
+        <iframe class="preview__frame" src="https://teneriferesortinvest.es/" loading="lazy" title="Tenerife Resort Invest" sandbox="allow-scripts allow-same-origin allow-popups"></iframe>
+      </div>
+      <div class="card__actions">
+        <a class="btn" href="https://teneriferesortinvest.es/" target="_blank" rel="noopener">Open live →</a>
+      </div>
+    </article>
+
+  </main>
+
+  <footer class="foot">
+    © 2026 — Agent Costantino · Tenerife · <a href="mailto:teneriferesortinvest@gmail.com">teneriferesortinvest@gmail.com</a>
+  </footer>
+
+  <script>
+    // hide thumb fallback once iframe content loads
+    document.querySelectorAll('.preview').forEach(p => {
+      const f = p.querySelector('iframe');
+      const t = p.querySelector('.preview__thumb');
+      if (!f || !t) return;
+      f.addEventListener('load', () => { t.style.opacity = 0; });
+      // safety: hide thumb after 6s regardless
+      setTimeout(() => { t.style.opacity = 0; }, 6000);
+    });
+  </script>
+</body>
+</html>
