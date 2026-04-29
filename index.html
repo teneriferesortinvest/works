@@ -66,6 +66,7 @@
     .hero {
       text-align: center;
       padding: clamp(40px, 7vw, 80px) var(--pad) clamp(40px, 5vw, 64px);
+      position: relative;
     }
     .hero__mark {
       font-family: var(--serif);
@@ -76,6 +77,28 @@
       letter-spacing: -0.02em;
       color: var(--ink);
       margin: 0 0 14px 0;
+      position: relative;
+      display: inline-block;
+    }
+    .hero__sticker {
+      position: absolute;
+      top: clamp(-26px, -2.5vw, -44px);
+      right: clamp(-30px, -3.5vw, -70px);
+      width: clamp(80px, 12vw, 170px);
+      height: auto;
+      transform: rotate(9deg);
+      filter: drop-shadow(0 6px 14px rgba(0,0,0,0.18));
+      pointer-events: none;
+      z-index: 2;
+    }
+    @media (max-width: 600px) {
+      .hero__sticker {
+        position: static;
+        display: block;
+        margin: -10px auto 18px;
+        transform: rotate(-4deg);
+        width: 110px;
+      }
     }
     .hero__sub {
       font-family: var(--serif);
@@ -203,21 +226,11 @@
     }
 
     /* responsive scale */
+    @media (max-width: 480px)  { .preview { --scale: 0.24; } }
+    @media (min-width: 481px)  { .preview { --scale: 0.28; } }
     @media (min-width: 720px)  { .preview { --scale: 0.32; } }
     @media (min-width: 1100px) { .preview { --scale: 0.36; } }
     @media (min-width: 1300px) { .preview { --scale: 0.40; } }
-
-    /* MOBILE (< 720px): no iframes at all — pure static thumb + link.
-       Stops iOS Safari memory thrash from 7 cross-origin frames. */
-    @media (max-width: 719.98px) {
-      .preview__frame { display: none !important; }
-      .preview { aspect-ratio: 4 / 5; }
-      .preview .preview__thumb { opacity: 1 !important; }
-      .preview .preview__cover {
-        z-index: 6;
-        pointer-events: auto;   /* mobile: thumb is the tap target */
-      }
-    }
 
     /* card actions */
     .card__actions {
@@ -273,7 +286,10 @@
   </nav>
 
   <header class="hero">
-    <h1 class="hero__mark">Agent Smith</h1>
+    <h1 class="hero__mark">
+      Agent Smith
+      <img class="hero__sticker" src="assets/agent-smith-sticker.png" alt="" aria-hidden="true" loading="eager" />
+    </h1>
     <p class="hero__sub">Studio · Landing Pages · Tenerife</p>
   </header>
 
@@ -396,29 +412,59 @@
   <script>
     (function () {
       'use strict';
-      var DESKTOP = window.matchMedia('(min-width: 720px)').matches;
-      var supportsIO = 'IntersectionObserver' in window;
 
-      function mount(p) {
+      // Mobile-safe: mount iframe when card enters viewport, UNMOUNT when it leaves.
+      // Keeps DOM iframe count low (~1-2 alive at a time) so iOS Safari doesn't OOM.
+      var supportsIO = 'IntersectionObserver' in window;
+      var previews = Array.prototype.slice.call(document.querySelectorAll('.preview'));
+
+      function mount (p) {
         if (p.classList.contains('is-active')) return;
         var f = p.querySelector('.preview__frame');
         if (!f) return;
-        var s = f.getAttribute('data-src');
+        var s = f.getAttribute('data-src') || f.getAttribute('data-original-src');
         if (!s) return;
+        f.setAttribute('data-original-src', s);
         f.setAttribute('src', s);
         f.removeAttribute('data-src');
         p.classList.add('is-active');
       }
+      function unmount (p) {
+        if (!p.classList.contains('is-active')) return;
+        var f = p.querySelector('.preview__frame');
+        if (!f) return;
+        // free up memory: remove src AND swap iframe element so renderer drops it
+        f.removeAttribute('src');
+        var clone = f.cloneNode(false);
+        clone.removeAttribute('src');
+        f.parentNode.replaceChild(clone, f);
+        p.classList.remove('is-active');
+      }
 
-      if (!DESKTOP) return;            // mobile: never mount iframes — thumb-only
-      var previews = document.querySelectorAll('.preview');
-      if (!supportsIO) { previews.forEach(mount); return; }
-      var io = new IntersectionObserver(function (entries) {
+      if (!supportsIO) {
+        // Old browser: just mount the first one and let the rest be thumbs.
+        if (previews[0]) mount(previews[0]);
+        return;
+      }
+
+      // Pre-warm: mount card when it gets within ~600px of viewport.
+      var inView = new IntersectionObserver(function (entries) {
         entries.forEach(function (e) {
-          if (e.isIntersecting) { mount(e.target); io.unobserve(e.target); }
+          if (e.isIntersecting) mount(e.target);
         });
-      }, { rootMargin: '200px 0px', threshold: 0.05 });
-      previews.forEach(function (p) { io.observe(p); });
+      }, { rootMargin: '600px 0px 600px 0px', threshold: 0 });
+
+      // Cleanup: when card moves more than ~1500px away, unmount.
+      var farAway = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (!e.isIntersecting) unmount(e.target);
+        });
+      }, { rootMargin: '1500px 0px 1500px 0px', threshold: 0 });
+
+      previews.forEach(function (p) {
+        inView.observe(p);
+        farAway.observe(p);
+      });
     })();
     </script>
 </body>
