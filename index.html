@@ -88,9 +88,9 @@
       width: clamp(80px, 12vw, 170px);
       height: auto;
       transform: rotate(9deg);
-      filter: drop-shadow(0 6px 14px rgba(0,0,0,0.18));
       pointer-events: none;
       z-index: 2;
+      /* drop-shadow filter removed per iOS Safari composite-layer pressure */
     }
     @media (max-width: 600px) {
       .hero__sticker {
@@ -348,6 +348,14 @@
       transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
     .preview:hover { transform: translate(-2px, -2px); box-shadow: 10px 10px 0 0 var(--ink); }
+    /* mobile-only long-screenshot for the scroll-inside feature, NO iframe */
+    .preview__longshot {
+      display: none;
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+      background: var(--bg-paper);
+    }
 
     .preview__frame {
       position: absolute;
@@ -388,28 +396,21 @@
     @media (min-width: 1100px) { .preview { --scale: 0.36; } }
     @media (min-width: 1300px) { .preview { --scale: 0.40; } }
 
-    /* MOBILE: spotlight mode — ONE iframe at a time, follows your scroll.
-       The card closest to viewport center auto-mounts; others stay thumb-only.
-       Memory stays flat → iOS Safari doesn't crash, scroll feature preserved. */
+    /* MOBILE: kill all iframes, show long screenshot inside scrollable wrap.
+       Pure native scroll on a single static image = zero JS, zero compositor
+       pressure, zero memory blow-ups. iOS Safari can't crash on this. */
     @media (max-width: 719.98px) {
-      .preview .preview__cover { pointer-events: auto; }
-      .preview.is-active .preview__cover { pointer-events: none; } /* let iframe take touch */
-      /* small "EN VIVO" pill on the active card so the user knows which is live */
-      .preview.is-active::after {
-        content: "● EN VIVO";
-        position: absolute;
-        top: 10px; left: 10px;
-        z-index: 7;
-        background: var(--lime);
-        color: var(--ink);
-        font-family: var(--display);
-        font-weight: 800;
-        font-size: 10px;
-        letter-spacing: 0.14em;
-        padding: 5px 9px;
-        border: 2px solid var(--ink);
-        pointer-events: none;
+      .preview {
+        overflow-y: auto;
+        overflow-x: hidden;
+        background: var(--bg-paper);
       }
+      .preview > .preview__frame,
+      .preview > .preview__cover,
+      .preview > .preview__thumb { display: none !important; }
+      .preview > .preview__longshot { display: block; }
+      .preview.preview--static > .preview__longshot { display: none; }
+      .preview.preview--static > .preview__thumb { display: block !important; }
     }
 
     /* card actions */
@@ -490,7 +491,7 @@ Si tienes treinta minutos, te lo demuestro.
 
 → +34 689 525 199"><span class="typewriter__caret"></span></p>
       <div class="typewriter__sign">
-        <img class="typewriter__avatar" src="assets/tino.jpg" alt="Tino Machristi" loading="lazy" width="128" height="128" />
+        <img class="typewriter__avatar" src="assets/tino-avatar.jpg" alt="Tino Machristi" loading="lazy" width="128" height="128" />
         <div class="typewriter__signinfo">
           <strong>Tino Machristi</strong>
           Tenerife · <a href="tel:+34689525199">+34 689 525 199</a>
@@ -522,6 +523,7 @@ Si tienes treinta minutos, te lo demuestro.
       <div class="preview">
         <img class="preview__thumb" src="assets/thumbs/vito-v3.jpg" alt="Valor Oculto v3" loading="lazy" width="800" height="1000" />
         <a class="preview__cover" href="https://teneriferesortinvest.github.io/valor-oculto-demos/v3/" target="_blank" rel="noopener" aria-label="Verla en vivo"></a>
+        <img class="preview__longshot" src="assets/scrolls/vito-v3.jpg" alt="" loading="lazy" decoding="async" />
         <iframe class="preview__frame" data-src="https://teneriferesortinvest.github.io/valor-oculto-demos/v3/" title="Valor Oculto v3" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
       </div>
       <div class="card__actions">
@@ -536,6 +538,7 @@ Si tienes treinta minutos, te lo demuestro.
       <div class="preview">
         <img class="preview__thumb" src="assets/thumbs/vito-v2.jpg" alt="Valor Oculto v2" loading="lazy" width="800" height="1000" />
         <a class="preview__cover" href="https://teneriferesortinvest.github.io/valor-oculto-demos/v2/" target="_blank" rel="noopener" aria-label="Verla en vivo"></a>
+        <img class="preview__longshot" src="assets/scrolls/vito-v2.jpg" alt="" loading="lazy" decoding="async" />
         <iframe class="preview__frame" data-src="https://teneriferesortinvest.github.io/valor-oculto-demos/v2/" title="Valor Oculto v2" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
       </div>
       <div class="card__actions">
@@ -550,6 +553,7 @@ Si tienes treinta minutos, te lo demuestro.
       <div class="preview">
         <img class="preview__thumb" src="assets/thumbs/vito-v1.jpg" alt="Valor Oculto v1" loading="lazy" width="800" height="1000" />
         <a class="preview__cover" href="https://teneriferesortinvest.github.io/valor-oculto-demos/v1/" target="_blank" rel="noopener" aria-label="Verla en vivo"></a>
+        <img class="preview__longshot" src="assets/scrolls/vito-v1.jpg" alt="" loading="lazy" decoding="async" />
         <iframe class="preview__frame" data-src="https://teneriferesortinvest.github.io/valor-oculto-demos/v1/" title="Valor Oculto v1" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
       </div>
       <div class="card__actions">
@@ -564,6 +568,7 @@ Si tienes treinta minutos, te lo demuestro.
       <div class="preview">
         <img class="preview__thumb" src="assets/thumbs/villa-bali.jpg" alt="Villa Bali" loading="lazy" width="800" height="1000" />
         <a class="preview__cover" href="https://teneriferesortinvest.github.io/tri-dashboard/villa-bali/" target="_blank" rel="noopener" aria-label="Verla en vivo"></a>
+        <img class="preview__longshot" src="assets/scrolls/villa-bali.jpg" alt="" loading="lazy" decoding="async" />
         <iframe class="preview__frame" data-src="https://teneriferesortinvest.github.io/tri-dashboard/villa-bali/" title="Villa Bali" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
       </div>
       <div class="card__actions">
@@ -578,6 +583,7 @@ Si tienes treinta minutos, te lo demuestro.
       <div class="preview">
         <img class="preview__thumb" src="assets/thumbs/villa-arizona.jpg" alt="Villa Arizona" loading="lazy" width="800" height="1000" />
         <a class="preview__cover" href="https://teneriferesortinvest.github.io/villa-arizona/" target="_blank" rel="noopener" aria-label="Verla en vivo"></a>
+        <img class="preview__longshot" src="assets/scrolls/villa-arizona.jpg" alt="" loading="lazy" decoding="async" />
         <iframe class="preview__frame" data-src="https://teneriferesortinvest.github.io/villa-arizona/" title="Villa Arizona" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
       </div>
       <div class="card__actions">
@@ -592,6 +598,7 @@ Si tienes treinta minutos, te lo demuestro.
       <div class="preview">
         <img class="preview__thumb" src="assets/thumbs/tri-rebuild.jpg" alt="Tenerife Resort Invest — rediseño" loading="lazy" width="800" height="1000" />
         <a class="preview__cover" href="https://teneriferesortinvest.github.io/tri-website-preview/" target="_blank" rel="noopener" aria-label="Verla en vivo"></a>
+        <img class="preview__longshot" src="assets/scrolls/tri-rebuild.jpg" alt="" loading="lazy" decoding="async" />
         <iframe class="preview__frame" data-src="https://teneriferesortinvest.github.io/tri-website-preview/" title="TRI rebuild" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
       </div>
       <div class="card__actions">
@@ -606,6 +613,7 @@ Si tienes treinta minutos, te lo demuestro.
       <div class="preview">
         <img class="preview__thumb" src="assets/thumbs/tri-main.jpg" alt="Tenerife Resort Invest" loading="lazy" width="800" height="1000" />
         <a class="preview__cover" href="https://teneriferesortinvest.es/" target="_blank" rel="noopener" aria-label="Verla en vivo"></a>
+        <img class="preview__longshot" src="assets/scrolls/tri-main.jpg" alt="" loading="lazy" decoding="async" />
         <iframe class="preview__frame" data-src="https://teneriferesortinvest.es/" title="Tenerife Resort Invest" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
       </div>
       <div class="card__actions">
@@ -628,6 +636,7 @@ Si tienes treinta minutos, te lo demuestro.
       <div class="preview">
         <img class="preview__thumb" src="assets/tools/tri-dashboard.jpg" alt="TRI Morning Dashboard" loading="lazy" width="800" height="1000" />
         <a class="preview__cover" href="https://teneriferesortinvest.github.io/tri-dashboard/" target="_blank" rel="noopener" aria-label="Abrir dashboard"></a>
+        <img class="preview__longshot" src="assets/scrolls/tri-dashboard.jpg" alt="" loading="lazy" decoding="async" />
         <iframe class="preview__frame" data-src="https://teneriferesortinvest.github.io/tri-dashboard/" title="TRI Dashboard" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
       </div>
       <div class="card__actions">
@@ -671,7 +680,7 @@ Si tienes treinta minutos, te lo demuestro.
 
   <!-- ── closing portrait + line ─────────────────────────────── -->
   <section class="closing">
-    <img class="closing__photo" src="assets/tino.jpg" alt="Tino" loading="lazy" width="220" height="220" />
+    <img class="closing__photo" src="assets/tino-closing.jpg" alt="Tino" loading="lazy" width="220" height="220" />
     <p class="closing__line">
       Hablemos<br/><span class="lime">treinta minutos</span>.
     </p>
@@ -719,8 +728,9 @@ Si tienes treinta minutos, te lo demuestro.
 
       var iframeable = previews.filter(function (p) { return !p.classList.contains('preview--static'); });
 
+      // Only desktop runs iframes. Mobile uses static long screenshots inside
+      // a scrollable wrap (handled purely by CSS), so JS does nothing there.
       if (IS_DESKTOP && supportsIO) {
-        // Desktop: auto-mount on entry, unmount when far. Multiple iframes OK.
         var inView = new IntersectionObserver(function (entries) {
           entries.forEach(function (e) { if (e.isIntersecting) mount(e.target); });
         }, { rootMargin: '600px 0px 600px 0px', threshold: 0 });
@@ -728,88 +738,35 @@ Si tienes treinta minutos, te lo demuestro.
           entries.forEach(function (e) { if (!e.isIntersecting) unmount(e.target); });
         }, { rootMargin: '1500px 0px 1500px 0px', threshold: 0 });
         iframeable.forEach(function (p) { inView.observe(p); farAway.observe(p); });
-      } else {
-        // ── MOBILE SPOTLIGHT ──────────────────────────────────────
-        // Only ONE iframe alive at a time. The card whose center is
-        // closest to the viewport center gets mounted; others stay
-        // as thumbs. As you scroll, the spotlight follows.
-        var current = null;
-        var ticking = false;
-        var ENTER_DIST = function () { return window.innerHeight * 0.65; };  // mount within ~65% vh of center
-        var EXIT_DIST  = function () { return window.innerHeight * 1.10; };  // unmount past ~110% vh
-
-        function distFromCenter (el) {
-          var r = el.getBoundingClientRect();
-          var cardCenter = r.top + r.height / 2;
-          var vpCenter   = window.innerHeight / 2;
-          return Math.abs(cardCenter - vpCenter);
-        }
-
-        function pickWinner () {
-          var best = null, bestD = Infinity;
-          for (var i = 0; i < iframeable.length; i++) {
-            var d = distFromCenter(iframeable[i]);
-            if (d < bestD) { bestD = d; best = iframeable[i]; }
-          }
-          return { card: best, dist: bestD };
-        }
-
-        function update () {
-          ticking = false;
-          var w = pickWinner();
-          if (!w.card) return;
-          if (w.dist > EXIT_DIST() || w.dist > ENTER_DIST() && current !== w.card) {
-            // far from center — unmount current if any
-            if (current && w.dist > EXIT_DIST()) {
-              unmount(current);
-              current = null;
-              return;
-            }
-          }
-          if (w.dist <= ENTER_DIST() && current !== w.card) {
-            if (current) unmount(current);
-            mount(w.card);
-            current = w.card;
-          }
-        }
-
-        function onScroll () {
-          if (ticking) return;
-          ticking = true;
-          requestAnimationFrame(update);
-        }
-
-        window.addEventListener('scroll', onScroll, { passive: true });
-        window.addEventListener('resize', onScroll);
-        // first run after layout
-        setTimeout(update, 200);
       }
 
       // ── typewriter "Qué hago" ────────────────────────────────────
+      // Mobile + reduced-motion: render full text immediately (no setTimeout
+      // chain — keeps iOS Safari main thread quiet)
       var twEl = document.querySelector('.typewriter__text');
       if (twEl) {
         var fullText = twEl.getAttribute('data-text') || '';
         var caret = twEl.querySelector('.typewriter__caret');
         twEl.firstChild && twEl.firstChild.nodeType === 3 && twEl.removeChild(twEl.firstChild);
-        var i = 0;
         var prefersReduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        function tick () {
-          if (i < fullText.length) {
+        var staticOnly = !IS_DESKTOP || prefersReduce;
+
+        if (staticOnly) {
+          twEl.insertBefore(document.createTextNode(fullText), caret);
+          if (caret) caret.style.display = 'none';
+        } else {
+          var i = 0;
+          function tick () {
+            if (i >= fullText.length) return;
             var ch = fullText.charAt(i);
             twEl.insertBefore(document.createTextNode(ch), caret);
             i++;
-            // varied delay = natural feel; pause longer on punctuation
             var d = (ch === '.' || ch === '?' || ch === '!') ? 320
                   : (ch === ',' ? 180
                   : (ch === '\n' ? 260
                   : (18 + Math.random() * 28)));
             setTimeout(tick, d);
           }
-        }
-        if (prefersReduce) {
-          twEl.insertBefore(document.createTextNode(fullText), caret);
-        } else {
-          // small delay before starting
           setTimeout(tick, 600);
         }
       }
