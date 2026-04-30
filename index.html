@@ -33,7 +33,8 @@
     }
 
     *, *::before, *::after { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
+    /* NB: scroll-behavior:smooth removed — fights with iOS native momentum */
+    html { -webkit-text-size-adjust: 100%; }
     body {
       margin: 0;
       background: var(--bg);
@@ -43,6 +44,8 @@
       line-height: 1.55;
       -webkit-font-smoothing: antialiased;
       text-rendering: optimizeLegibility;
+      touch-action: pan-y;                 /* lock to vertical scroll on touch */
+      overscroll-behavior-y: contain;      /* don't rubber-band into nothing */
     }
     img { max-width: 100%; display: block; }
     a { color: inherit; text-decoration: none; }
@@ -404,13 +407,27 @@
         overflow-y: auto;
         overflow-x: hidden;
         background: var(--bg-paper);
+        /* iOS scroll-stability — keeps nested scroll smooth */
+        overscroll-behavior: contain;
+        touch-action: pan-y;
+        contain: paint layout;
+        scroll-snap-type: none;
+        will-change: scroll-position;
       }
       .preview > .preview__frame,
       .preview > .preview__cover,
       .preview > .preview__thumb { display: none !important; }
-      .preview > .preview__longshot { display: block; }
+      .preview > .preview__longshot {
+        display: block;
+        position: relative;
+        width: 100%;
+        height: auto;
+        max-width: 100%;
+      }
       .preview.preview--static > .preview__longshot { display: none; }
       .preview.preview--static > .preview__thumb { display: block !important; }
+      /* prevent the rotated closing photo from triggering scroll-area overlap */
+      .closing__photo { transform: none; }
     }
 
     /* card actions */
@@ -523,7 +540,7 @@ Si tienes treinta minutos, te lo demuestro.
       <div class="preview">
         <img class="preview__thumb" src="assets/thumbs/vito-v3.jpg" alt="Valor Oculto v3" loading="lazy" width="800" height="1000" />
         <a class="preview__cover" href="https://teneriferesortinvest.github.io/valor-oculto-demos/v3/" target="_blank" rel="noopener" aria-label="Verla en vivo"></a>
-        <img class="preview__longshot" src="assets/scrolls/vito-v3.jpg" alt="" loading="lazy" decoding="async" />
+        <img class="preview__longshot" src="assets/scrolls/vito-v3.jpg" alt="" width="720" height="2812" loading="lazy" decoding="async" />
         <iframe class="preview__frame" data-src="https://teneriferesortinvest.github.io/valor-oculto-demos/v3/" title="Valor Oculto v3" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
       </div>
       <div class="card__actions">
@@ -538,7 +555,7 @@ Si tienes treinta minutos, te lo demuestro.
       <div class="preview">
         <img class="preview__thumb" src="assets/thumbs/vito-v2.jpg" alt="Valor Oculto v2" loading="lazy" width="800" height="1000" />
         <a class="preview__cover" href="https://teneriferesortinvest.github.io/valor-oculto-demos/v2/" target="_blank" rel="noopener" aria-label="Verla en vivo"></a>
-        <img class="preview__longshot" src="assets/scrolls/vito-v2.jpg" alt="" loading="lazy" decoding="async" />
+        <img class="preview__longshot" src="assets/scrolls/vito-v2.jpg" alt="" width="720" height="2812" loading="lazy" decoding="async" />
         <iframe class="preview__frame" data-src="https://teneriferesortinvest.github.io/valor-oculto-demos/v2/" title="Valor Oculto v2" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
       </div>
       <div class="card__actions">
@@ -553,7 +570,7 @@ Si tienes treinta minutos, te lo demuestro.
       <div class="preview">
         <img class="preview__thumb" src="assets/thumbs/vito-v1.jpg" alt="Valor Oculto v1" loading="lazy" width="800" height="1000" />
         <a class="preview__cover" href="https://teneriferesortinvest.github.io/valor-oculto-demos/v1/" target="_blank" rel="noopener" aria-label="Verla en vivo"></a>
-        <img class="preview__longshot" src="assets/scrolls/vito-v1.jpg" alt="" loading="lazy" decoding="async" />
+        <img class="preview__longshot" src="assets/scrolls/vito-v1.jpg" alt="" width="720" height="2812" loading="lazy" decoding="async" />
         <iframe class="preview__frame" data-src="https://teneriferesortinvest.github.io/valor-oculto-demos/v1/" title="Valor Oculto v1" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
       </div>
       <div class="card__actions">
@@ -568,7 +585,7 @@ Si tienes treinta minutos, te lo demuestro.
       <div class="preview">
         <img class="preview__thumb" src="assets/thumbs/villa-bali.jpg" alt="Villa Bali" loading="lazy" width="800" height="1000" />
         <a class="preview__cover" href="https://teneriferesortinvest.github.io/tri-dashboard/villa-bali/" target="_blank" rel="noopener" aria-label="Verla en vivo"></a>
-        <img class="preview__longshot" src="assets/scrolls/villa-bali.jpg" alt="" loading="lazy" decoding="async" />
+        <img class="preview__longshot" src="assets/scrolls/villa-bali.jpg" alt="" width="720" height="2812" loading="lazy" decoding="async" />
         <iframe class="preview__frame" data-src="https://teneriferesortinvest.github.io/tri-dashboard/villa-bali/" title="Villa Bali" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
       </div>
       <div class="card__actions">
@@ -583,7 +600,7 @@ Si tienes treinta minutos, te lo demuestro.
       <div class="preview">
         <img class="preview__thumb" src="assets/thumbs/villa-arizona.jpg" alt="Villa Arizona" loading="lazy" width="800" height="1000" />
         <a class="preview__cover" href="https://teneriferesortinvest.github.io/villa-arizona/" target="_blank" rel="noopener" aria-label="Verla en vivo"></a>
-        <img class="preview__longshot" src="assets/scrolls/villa-arizona.jpg" alt="" loading="lazy" decoding="async" />
+        <img class="preview__longshot" src="assets/scrolls/villa-arizona.jpg" alt="" width="720" height="2812" loading="lazy" decoding="async" />
         <iframe class="preview__frame" data-src="https://teneriferesortinvest.github.io/villa-arizona/" title="Villa Arizona" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
       </div>
       <div class="card__actions">
@@ -598,7 +615,7 @@ Si tienes treinta minutos, te lo demuestro.
       <div class="preview">
         <img class="preview__thumb" src="assets/thumbs/tri-rebuild.jpg" alt="Tenerife Resort Invest — rediseño" loading="lazy" width="800" height="1000" />
         <a class="preview__cover" href="https://teneriferesortinvest.github.io/tri-website-preview/" target="_blank" rel="noopener" aria-label="Verla en vivo"></a>
-        <img class="preview__longshot" src="assets/scrolls/tri-rebuild.jpg" alt="" loading="lazy" decoding="async" />
+        <img class="preview__longshot" src="assets/scrolls/tri-rebuild.jpg" alt="" width="720" height="2812" loading="lazy" decoding="async" />
         <iframe class="preview__frame" data-src="https://teneriferesortinvest.github.io/tri-website-preview/" title="TRI rebuild" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
       </div>
       <div class="card__actions">
@@ -621,7 +638,7 @@ Si tienes treinta minutos, te lo demuestro.
       <div class="preview">
         <img class="preview__thumb" src="assets/tools/tri-dashboard.jpg" alt="TRI Morning Dashboard" loading="lazy" width="800" height="1000" />
         <a class="preview__cover" href="https://teneriferesortinvest.github.io/tri-dashboard/" target="_blank" rel="noopener" aria-label="Abrir dashboard"></a>
-        <img class="preview__longshot" src="assets/scrolls/tri-dashboard.jpg" alt="" loading="lazy" decoding="async" />
+        <img class="preview__longshot" src="assets/scrolls/tri-dashboard.jpg" alt="" width="720" height="2812" loading="lazy" decoding="async" />
         <iframe class="preview__frame" data-src="https://teneriferesortinvest.github.io/tri-dashboard/" title="TRI Dashboard" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
       </div>
       <div class="card__actions">
